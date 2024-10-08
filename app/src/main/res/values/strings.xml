@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Push A Notification</string>
+    <string name="push">Push</string>
+    <string name="name">Name</string>
+    <string name="content">Content</string>
+    <string name="notifications">Notifications</string>
+</resources>
