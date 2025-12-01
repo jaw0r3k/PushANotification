@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import kotlin.math.min
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity () {
@@ -41,20 +42,23 @@ class MainActivity : AppCompatActivity () {
     fun pushNotification(view: View) {
         val CHANNEL_ID = "jaw0r3k";
 
-        var builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.notifications)
-            .setContentTitle(findViewById<EditText>(R.id.editTextName).text.toString())
-            .setContentText(findViewById<EditText>(R.id.editTextContent).text.toString())
-            .setStyle(NotificationCompat.BigTextStyle()
-                .bigText(findViewById<EditText>(R.id.editTextContent).text.toString()))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             activityResultLauncher?.launch(Array(1) { Manifest.permission.POST_NOTIFICATIONS })
         }
+
+        var text = findViewById<EditText>(R.id.editTextContent).text.toString()
+
+        var maxLength = findViewById<EditText>(R.id.maxLengthEdit).text.toString().toInt()
+
+        var builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.notifications)
+            .setContentTitle(findViewById<EditText>(R.id.editTextName).text.toString())
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText(text))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         val channel = NotificationChannel(CHANNEL_ID, getString(R.string.notifications), NotificationManager.IMPORTANCE_DEFAULT).apply {
             description = getString(R.string.notifications)
@@ -62,6 +66,14 @@ class MainActivity : AppCompatActivity () {
         val nManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         nManager.createNotificationChannel(channel)
+
+        if (text.length > maxLength) {
+            for (i in 0..text.length / maxLength) {
+                builder.setContentText(text.substring(i * maxLength, min(((i + 1) * maxLength), text.length)));
+                nManager.notify(Random.nextInt(), builder.build())
+            }
+        } else {
         nManager.notify(Random.nextInt(), builder.build())
+        }
     }
 }
