@@ -48,9 +48,9 @@ class MainActivity : AppCompatActivity () {
             activityResultLauncher?.launch(Array(1) { Manifest.permission.POST_NOTIFICATIONS })
         }
 
-        var text = findViewById<EditText>(R.id.editTextContent).text.toString()
+        val text = findViewById<EditText>(R.id.editTextContent).text.toString()
 
-        var maxLength = findViewById<EditText>(R.id.maxLengthEdit).text.toString().toInt()
+        val maxLength = ("0" + findViewById<EditText>(R.id.maxLengthEdit).text.toString()).toInt()
 
         var builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.notifications)
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity () {
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         nManager.createNotificationChannel(channel)
 
-        if (text.length > maxLength) {
+        if (text.length > maxLength && maxLength != 0) {
             for (i in 0..text.length / maxLength) {
                 builder.setContentText(text.substring(i * maxLength, min(((i + 1) * maxLength), text.length)));
                 nManager.notify(Random.nextInt(), builder.build())

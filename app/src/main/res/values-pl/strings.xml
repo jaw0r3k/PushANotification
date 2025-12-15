@@ -5,4 +5,5 @@
     <string name="content">Treść</string>
     <string name="name">Nazwa</string>
     <string name="notifications">Powiadomienia</string>
+    <string name="max_length">Maksymalna długość</string>
 </resources>
